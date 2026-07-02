@@ -737,6 +737,65 @@ Location: SECTION 04, ALLOTMENT 07, BOMANA,<br>
         </p>
       </div>
     </footer>
-    
+    <script>
+  // Target your existing form (it looks like your submit button says "Send Message")
+  // If your form has an ID like id="contactForm", change 'form' to '#contactForm'
+  const formElement = document.querySelector('form');
+
+  if (formElement) {
+    formElement.addEventListener('submit', function(e) {
+      e.preventDefault(); // Stop page from reloading
+
+      const form = this;
+      const submitBtn = form.querySelector('button') || form.querySelector('input[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerText : 'Send Message';
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+      }
+
+      // Step 1: Map your HTML inputs exactly to what your Apps Script expects
+      // Note: Make sure the 'name' attributes on your HTML match the keys below!
+      const data = {
+        'first-name': form.querySelector('[name="first-name"]')?.value || form.querySelector('[name="firstName"]')?.value || '',
+        'last-name': form.querySelector('[name="last-name"]')?.value || form.querySelector('[name="lastName"]')?.value || '',
+        'email': form.querySelector('[name="email"]')?.value || '',
+        'phone': form.querySelector('[name="phone"]')?.value || '',
+        'company': '', // Left blank since it's not in your design layout
+        'project-type': form.querySelector('[name="project-type"]')?.value || form.querySelector('[name="projectType"]')?.value || '',
+        'message': form.querySelector('textarea')?.value || form.querySelector('[name="message"]')?.value || '',
+        'newsletter': form.querySelector('input[type="checkbox"]')?.checked ? 'Yes' : 'No'
+      };
+
+      // Step 2: Paste your Google Apps Script Web App URL here
+      const webAppUrl = 'YOUR_WEB_APP_URL_HERE';
+
+      // Step 3: Send data securely to Google Sheets
+      fetch(webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Crucial configuration for Google Apps Script Web Apps
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        alert('Thank you! Your message has been sent successfully.');
+        form.reset(); // Clears out form inputs
+      })
+      .catch(error => {
+        console.error('Submission Error:', error);
+        alert('Something went wrong. Please check your connection and try again.');
+      })
+      .finally(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalBtnText;
+        }
+      });
+    });
+  }
+</script>
   </body>
 </html>
