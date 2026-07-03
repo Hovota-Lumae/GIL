@@ -225,13 +225,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const answer = question.nextElementSibling;
             const icon = question.querySelector('.material-icons-outlined');
             if (!answer || !icon) return;
-            
-            answer.style.display =
-                answer.style.display === 'block' ? 'none' : 'block';
-            icon.style.transform =
-                icon.style.transform === 'rotate(180deg)' ?
-                'rotate(0deg)' :
-                'rotate(180deg)';
+
+            question.classList.toggle('active');
+            answer.classList.toggle('active');
         });
     });
     
